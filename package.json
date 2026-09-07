@@ -1,0 +1,27 @@
+{
+  "name": "vibelane-ecom",
+  "version": "1.0.0",
+  "description": "VibeLane E-commerce Platform - Full-stack React & Node.js application",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm.cmd --prefix frontend run dev",
+    "dev:backend": "npm.cmd --prefix backend run dev",
+    "install:all": "npm.cmd install && npm.cmd --prefix frontend install && npm.cmd --prefix backend install",
+    "build": "npm.cmd --prefix frontend run build",
+    "start": "npm.cmd --prefix backend start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "vibelane",
+    "ecommerce",
+    "react",
+    "vite",
+    "nodejs",
+    "express"
+  ],
+  "author": "",
+  "license": "MIT"
+}
