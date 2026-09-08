@@ -1,6 +1,6 @@
 # VibeLane E-Commerce Platform
 
-A modern full-stack e-commerce boilerplate built with **React (Vite)** on the frontend and **Node.js (Express)** on the backend.
+A modern full-stack e-commerce website built with **React (Vite)** on the frontend and **Node.js (Express)** on the backend.
 
 ---
 
@@ -61,6 +61,7 @@ npm run install:all
 ```
 
 Or install separately:
+
 ```bash
 # Frontend
 cd frontend
@@ -85,6 +86,7 @@ API_PREFIX=/api/v1
 ### 3. Run the Development Environment
 
 Run both frontend and backend concurrently:
+
 ```bash
 npm run dev
 ```
@@ -92,19 +94,21 @@ npm run dev
 Or run each independently:
 
 - **Frontend only** (http://localhost:5173):
-  ```bash
-  npm run dev:frontend
-  ```
+   ```bash
+   npm run dev:frontend
+   ```
 - **Backend only** (http://localhost:5000):
-  ```bash
-  npm run dev:backend
-  ```
+   ```bash
+   npm run dev:backend
+   ```
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/` | API Root Welcome Message |
-| `GET` | `/api/v1/health` | Service Health Status & Timestamp |
+| Method | Endpoint         | Description                       |
+| :----- | :--------------- | :-------------------------------- |
+| `GET`  | `/`              | API Root Welcome Message          |
+| `GET`  | `/api/v1/health` | Service Health Status & Timestamp |
+
+many more to come. stay connected...
