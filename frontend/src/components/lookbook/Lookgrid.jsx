@@ -34,12 +34,21 @@ function Lookgrid() {
 						/>
 					</div>
 					<div
-						className="mt-2 text-stone-300 text-[20px] tracking-wide"
+						className="mt-2.5 flex flex-col select-none"
 						style={{
-							fontFamily: "'Inter', -apple-system, sans-serif",
+							fontFamily: "'Inter Tight', -apple-system, sans-serif",
 						}}
 					>
-						<p>{item.name}</p>
+						<div className="flex justify-between items-baseline text-[18px] md:text-[18px] text-[#EDE4DD] font-normal tracking-[-0.01em]">
+							<span className="truncate pr-2">{item.name}</span>
+							<span className="shrink-0 font-normal">
+								${Number(item.price).toFixed(2)}
+							</span>
+						</div>
+						<div className="flex items-center gap-1.5 mt-0.5 text-[9px] md:text-[10px] text-[#EDE4DD]/70 uppercase tracking-widest font-medium">
+							<span className="inline-block w-1.5 h-1.5 rounded-full bg-[#EDE4DD]" />
+							<span>{item.category || "APPAREL"}</span>
+						</div>
 					</div>
 				</div>
 			))}
