@@ -1,30 +1,31 @@
 {
-  "name": "vibelane-backend",
-  "version": "1.0.0",
-  "description": "Backend API service for VibeLane E-commerce platform",
-  "main": "src/server.js",
-  "type": "module",
-  "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "morgan": "^1.10.0",
-    "vibelane-ecom": "file:.."
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
-  },
-  "keywords": [
-    "ecommerce",
-    "vibelane",
-    "express",
-    "nodejs",
-    "api"
-  ],
-  "author": "",
-  "license": "ISC"
+	"name": "vibelane-backend",
+	"version": "1.0.0",
+	"description": "Backend API service for VibeLane E-commerce platform",
+	"main": "src/server.js",
+	"type": "module",
+	"scripts": {
+		"start": "nodemon src/server.js",
+		"dev": "nodemon src/server.js"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"mongoose": "^9.9.5",
+		"morgan": "^1.10.0",
+		"vibelane-ecom": "file:.."
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.14"
+	},
+	"keywords": [
+		"ecommerce",
+		"vibelane",
+		"express",
+		"nodejs",
+		"api"
+	],
+	"author": "",
+	"license": "ISC"
 }
