@@ -3,23 +3,59 @@ import useProducts from "../../hooks/useProducts";
 
 function Lookgrid() {
 	const { products, loading, error } = useProducts();
+	const [activeCategory, setActiveCategory] = React.useState("All");
+
+	const categories = React.useMemo(() => {
+		if (!products || products.length === 0) return ["All"];
+		const set = new Set(products.map((p) => p.category).filter(Boolean));
+		return ["All", ...Array.from(set)];
+	}, [products]);
+
+	const filteredProducts = React.useMemo(() => {
+		if (!products) return [];
+		if (activeCategory === "All") return products;
+		return products.filter((p) => p.category === activeCategory);
+	}, [products, activeCategory]);
+
 	if (loading) {
 		return (
-			<div className="text-center py-20 text-xs font-mono text-neutral-500">
-				Loading Collection...
+			<div className="text-center py-24 text-xs font-mono tracking-widest text-[#EDE4DD]/60">
+				INITIALIZING CATALOG ARCHIVE...
 			</div>
 		);
 	}
 	if (error) {
 		return (
-			<div className="text-center py-20 text-xs font-mono text-red-500">
-				Error: {error}
+			<div className="text-center py-24 text-xs font-mono text-red-400">
+				Error loading archive: {error}
 			</div>
 		);
 	}
 	return (
-		<div className="grid grid-cols-1 m-8 mt-25 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-			{products.map((item) => (
+		<div className="mx-6 md:mx-10 mt-14 mb-24">
+			{/* Category Filter Pills */}
+			<div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-white/10 select-none">
+				{categories.map((cat) => {
+					const count = cat === "All" ? products.length : products.filter((p) => p.category === cat).length;
+					const isActive = activeCategory === cat;
+					return (
+						<button
+							key={cat}
+							onClick={() => setActiveCategory(cat)}
+							className={`px-3.5 py-1.5 rounded-xs text-[11px] font-mono tracking-wider uppercase transition-all duration-200 cursor-pointer ${
+								isActive
+									? "bg-[#EDE4DD] text-black font-semibold shadow-sm"
+									: "text-[#EDE4DD]/70 hover:text-[#EDE4DD] hover:bg-white/5 border border-white/10"
+							}`}
+						>
+							{cat} <span className={`text-[9px] ml-1 ${isActive ? "text-black/60" : "text-[#EDE4DD]/40"}`}>({count})</span>
+						</button>
+					);
+				})}
+			</div>
+
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+				{filteredProducts.map((item) => (
 				<div key={item._id || item.itemNumber || item.slug} className="flex flex-col">
 					<div className="group relative aspect-[3/4] overflow-hidden bg-[#141414] rounded-sm cursor-pointer select-none">
 						{item.badge && (
@@ -64,6 +100,7 @@ function Lookgrid() {
 					</div>
 				</div>
 			))}
+			</div>
 		</div>
 	);
 }
