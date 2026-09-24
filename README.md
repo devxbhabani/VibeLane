@@ -4,35 +4,37 @@ A modern full-stack e-commerce experience inspired by high-fashion editorial bru
 
 ---
 
-## ✨ Features & Architecture
+## Features & Architecture
 
-### 🎨 Frontend (Editorial & Brutalist UI)
-- **Fluid Hero Typography (`HeroTitle.jsx`)**: 
-  - Massive, responsive viewport-scaling wordmark (`text-[19.8vw]`) set in Swiss Neo-Grotesque font (**Inter Tight 900**).
-  - **Kinetic Letter-by-Letter Reveal**: Each character animates up smoothly through an overflow mask with staggered delays using custom easing curves (`cubic-bezier(0.16, 1, 0.3, 1)`).
-  - Animated 5px structural divider line drawing left-to-right (`origin-left scale-x-0` to `scale-x-100`).
+### Frontend (Editorial & Brutalist UI)
+
+- **Fluid Hero Typography (`HeroTitle.jsx`)**:
+   - Massive, responsive viewport-scaling wordmark (`text-[19.8vw]`) set in Swiss Neo-Grotesque font (**Inter Tight 900**).
+   - **Kinetic Letter-by-Letter Reveal**: Each character animates up smoothly through an overflow mask with staggered delays using custom easing curves (`cubic-bezier(0.16, 1, 0.3, 1)`).
+   - Animated 5px structural divider line drawing left-to-right (`origin-left scale-x-0` to `scale-x-100`).
 - **Lookbook Catalog (`Lookgrid.jsx`)**:
-  - High-fashion portrait cards using `aspect-[9/12]` aspect ratio.
-  - **Dual-Angle Hover Crossfade**: Smooth transition between the primary front view (`primaryImage`) and alternate/back angle (`hoverImage`) on hover.
-  - Minimalist metadata bar with product name, price, and category tag (`● APPAREL`).
+   - High-fashion portrait cards using `aspect-[9/12]` aspect ratio.
+   - **Dual-Angle Hover Crossfade**: Smooth transition between the primary front view (`primaryImage`) and alternate/back angle (`hoverImage`) on hover.
+   - Minimalist metadata bar with product name, price, and category tag (`● APPAREL`).
 - **Decoupled Service Layer**:
-  - `frontend/src/services/productService.js`: Centralized network requests and endpoint definitions.
-  - `frontend/src/hooks/useProducts.js`: Custom React hook encapsulating product state, loading spinners, and error handling (zero inline `fetch` calls in components).
+   - `frontend/src/services/productService.js`: Centralized network requests and endpoint definitions.
+   - `frontend/src/hooks/useProducts.js`: Custom React hook encapsulating product state, loading spinners, and error handling (zero inline `fetch` calls in components).
 - **Tailwind CSS v4**: Powered by native `@tailwindcss/vite` plugin and modern CSS-first theme configuration.
 - **Palette**: Luxury Warm Cream (`#EDE4DD`), Pitch Black (`#000000`), and Fashion Red (`#FF0001`) accent & selection.
 - **Minimalist Favicon**: Custom monochrome Swiss geometric monogram (`favicon.svg`).
 
-### ⚙️ Backend (RESTful API & Database)
+### Backend (RESTful API & Database)
+
 - **Express.js (ES Modules)**: Modular layered architecture (`controllers/`, `routes/`, `services/`, `models/`, `middleware/`, `config/`, `utils/`).
 - **MongoDB Atlas & Mongoose**:
-  - `Product` schema storing dual images (`primaryImage` and `hoverImage`), stock quantities, prices, categories, and badges.
-  - **Automatic Seeding**: Populates initial catalog if MongoDB collection is empty on startup.
+   - `Product` schema storing dual images (`primaryImage` and `hoverImage`), stock quantities, prices, categories, and badges.
+   - **Automatic Seeding**: Populates initial catalog if MongoDB collection is empty on startup.
 - **Robust Error Handling**: Operational `AppError` class and centralized `errorHandler` middleware.
 - **Standardized Response Shapes**: Uniform JSON format via `ApiResponse` utility.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 VibeLane-Ecom/
@@ -79,7 +81,7 @@ VibeLane-Ecom/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Install Dependencies
 
@@ -90,6 +92,7 @@ npm run install:all
 ```
 
 Or install individually:
+
 ```bash
 # Frontend
 npm --prefix frontend install
@@ -121,31 +124,31 @@ npm run dev
 Or run each service independently:
 
 - **Frontend only** (`http://localhost:5173`):
-  ```bash
-  npm run dev:frontend
-  ```
+   ```bash
+   npm run dev:frontend
+   ```
 - **Backend only** (`http://localhost:5000`):
-  ```bash
-  npm run dev:backend
-  ```
+   ```bash
+   npm run dev:backend
+   ```
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 All backend endpoints are prefixed with `/api/v1` (proxied in frontend via `/api`):
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/` | API Root Welcome Message |
-| `GET` | `/api/v1/health` | Service Health Status & Timestamp |
-| `GET` | `/api/v1/products` | Retrieve all products (Supports `?category=`, `?search=`, `?sort=`, `?minPrice=`, `?maxPrice=`) |
-| `GET` | `/api/v1/products/categories` | Retrieve distinct product categories |
-| `GET` | `/api/v1/products/:id` | Retrieve single product details by MongoDB `_id`, slug, or item number |
+| Method | Endpoint                      | Description                                                                                     |
+| :----- | :---------------------------- | :---------------------------------------------------------------------------------------------- |
+| `GET`  | `/`                           | API Root Welcome Message                                                                        |
+| `GET`  | `/api/v1/health`              | Service Health Status & Timestamp                                                               |
+| `GET`  | `/api/v1/products`            | Retrieve all products (Supports `?category=`, `?search=`, `?sort=`, `?minPrice=`, `?maxPrice=`) |
+| `GET`  | `/api/v1/products/categories` | Retrieve distinct product categories                                                            |
+| `GET`  | `/api/v1/products/:id`        | Retrieve single product details by MongoDB `_id`, slug, or item number                          |
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 19, Vite, Tailwind CSS v4, Inter Tight (Google Fonts)
 - **Backend**: Node.js, Express.js, Mongoose, Dotenv, Morgan, Cors, Nodemon
