@@ -6,6 +6,7 @@ import { AppProvider } from "./context/AppContext";
 import HeroTitle from "./components/hero/HeroTitle";
 import Lookgrid from "./components/lookbook/Lookgrid";
 import { ReactLenis } from "lenis/react";
+import Manifesto from "./components/layout/Manifesto";
 
 function App() {
 	return (
@@ -19,12 +20,13 @@ function App() {
 		>
 			<div className="app-container">
 				<AppProvider>
-					<div className="min-h-screen flex flex-col bg-black text-white selection:bg-[#FF0001] selection:text-white">
+					<div className="min-h-screen flex flex-col bg-black text-white selection:bg-[#f31919dc] selection:text-white">
 						{/* <Navbar />
 						<Home />
 						<Footer /> */}
 						<HeroTitle />
 						<Lookgrid />
+						<Manifesto />
 					</div>
 				</AppProvider>
 			</div>
