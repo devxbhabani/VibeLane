@@ -1,5 +1,6 @@
 import React from "react";
 import useProducts from "../../hooks/useProducts";
+import { motion } from "framer-motion";
 
 function Lookgrid() {
 	const { products, loading, error } = useProducts();
@@ -154,12 +155,16 @@ function Lookgrid() {
 					const style = getGridStyle(index);
 
 					return (
-						<div
+						<motion.div
 							key={item._id || item.itemNumber || item.slug}
 							className={`flex flex-col ${style.span} ${style.margin}`}
+							initial={{ opacity: 0, y: 50 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.9, ease: "easeOut" }} // Smooth timing
 						>
 							<div
-								className={`group relative overflow-hidden bg-[#141414] rounded-sm cursor-pointer select-none ${style.grow === false ? "flex-none" : "flex-grow"} ${style.aspect}`}
+								className={`group relative overflow-hidden bg-[#141414] rounded-sm cursor-pointer select-none ${style.grow === false ? "flex-none" : "grow"} ${style.aspect}`}
 							>
 								{item.badge && (
 									<div className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[9px] uppercase tracking-widest font-mono font-medium text-[#EDE4DD] bg-black/55 backdrop-blur-md border border-white/10 rounded-xs pointer-events-none transition-opacity duration-300">
@@ -168,7 +173,7 @@ function Lookgrid() {
 								)}
 								{item.itemNumber && (
 									<div className="absolute top-3 right-3 z-10 text-[10px] font-mono text-[#EDE4DD]/50 pointer-events-none">
-										#{item.itemNumber}
+										{/* #{item.itemNumber} */}
 									</div>
 								)}
 								<img
@@ -204,7 +209,7 @@ function Lookgrid() {
 									<span>{item.category || "APPAREL"}</span>
 								</div>
 							</div>
-						</div>
+						</motion.div>
 					);
 				})}
 			</div>
