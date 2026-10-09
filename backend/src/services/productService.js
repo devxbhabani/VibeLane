@@ -37,7 +37,7 @@ class ProductService {
       } else if (sort === 'price-high') {
         mongoQuery = mongoQuery.sort({ price: -1 });
       } else {
-        mongoQuery = mongoQuery.sort({ createdAt: -1 });
+        mongoQuery = mongoQuery.sort({ createdAt: 1 }); // Changed to 1 to preserve manual seed order
       }
 
       return await mongoQuery.lean();
