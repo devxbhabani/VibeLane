@@ -17,7 +17,7 @@ function Manifesto() {
 
 	return (
 		<>
-			<div className="mx-8 mb-8">
+			<div className="mx-8">
 				<div
 					className={`w-full h-1.25 bg-[#EDE4DD] mt-10 mb-4 origin-left transition-transform duration-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
 						isLoaded ? "scale-x-100" : "scale-x-0"

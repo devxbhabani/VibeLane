@@ -1,12 +1,10 @@
 import React from "react";
-import { Navbar } from "./components/layout/Navbar";
-import { Footer } from "./components/layout/Footer";
-import { Home } from "./pages/Home";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
-import HeroTitle from "./components/hero/HeroTitle";
-import Lookgrid from "./components/lookbook/Lookgrid";
 import { ReactLenis } from "lenis/react";
-import Manifesto from "./components/layout/Manifesto";
+import { Home } from "./pages/Home";
+import Privacy from "./components/layout/Privacy";
+import Terms from "./components/layout/Terms";
 
 function App() {
 	return (
@@ -20,14 +18,13 @@ function App() {
 		>
 			<div className="app-container">
 				<AppProvider>
-					<div className="min-h-screen flex flex-col bg-black text-white selection:bg-[#f31919dc] selection:text-white">
-						{/* <Navbar />
-						<Home />
-						<Footer /> */}
-						<HeroTitle />
-						<Lookgrid />
-						<Manifesto />
-					</div>
+					<Router>
+						<Routes>
+							<Route exact path="/" element={<Home />} />
+							<Route exact path="/privacy" element={<Privacy />} />
+							<Route exact path="/terms" element={<Terms />} />
+						</Routes>
+					</Router>
 				</AppProvider>
 			</div>
 		</ReactLenis>
