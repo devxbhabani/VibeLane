@@ -32,6 +32,10 @@ function Lookgrid() {
 			</div>
 		);
 	}
+
+	const linkHover =
+		"cursor-pointer font-medium relative inline-block w-fit leading-normal text-white transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-[#EDE4DD] after:transition-all after:duration-300 hover:after:w-full group-hover:after:w-full";
+
 	return (
 		<div className="mx-6 md:mx-10 mt-14 mb-24">
 			{/* Category Filter Pills */}
@@ -157,14 +161,14 @@ function Lookgrid() {
 					return (
 						<motion.div
 							key={item._id || item.itemNumber || item.slug}
-							className={`flex flex-col ${style.span} ${style.margin}`}
+							className={`group flex flex-col cursor-pointer ${style.span} ${style.margin}`}
 							initial={{ opacity: 0, y: 50 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true, margin: "-100px" }}
 							transition={{ duration: 0.9, ease: "easeOut" }} // Smooth timing
 						>
 							<div
-								className={`group relative overflow-hidden bg-[#141414] rounded-sm cursor-pointer select-none ${style.grow === false ? "flex-none" : "grow"} ${style.aspect}`}
+								className={`relative overflow-hidden bg-[#141414] rounded-sm select-none ${style.grow === false ? "flex-none" : "grow"} ${style.aspect}`}
 							>
 								{item.badge && (
 									<div className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[9px] uppercase tracking-widest font-mono font-medium text-[#EDE4DD] bg-black/55 backdrop-blur-md border border-white/10 rounded-xs pointer-events-none transition-opacity duration-300">
@@ -197,14 +201,14 @@ function Lookgrid() {
 								}}
 							>
 								<div className="flex justify-between items-baseline text-[17px] text-[#EDE4DD] font-normal tracking-[-0.01em]">
-									<span className="truncate pr-2 hover:underline cursor-pointer">
-										{item.name}
-									</span>
+									<div className="min-w-0 pr-2">
+										<span className={linkHover}>{item.name}</span>
+									</div>
 									<span className="shrink-0 font-medium">
 										${Number(item.price).toFixed(2)}
 									</span>
 								</div>
-								<div className="flex items-center gap-1.5 mt-0.5 text-[9px] md:text-[10px] text-[#EDE4DD]/60 uppercase tracking-widest font-medium">
+								<div className="flex items-center gap-1.5 mt-1 text-[9px] md:text-[10px] text-[#EDE4DD]/60 uppercase tracking-widest font-medium">
 									<span className="inline-block w-1.5 h-1.5 rounded-full bg-[#EDE4DD]/80" />
 									<span>{item.category || "APPAREL"}</span>
 								</div>
