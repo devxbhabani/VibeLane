@@ -1,6 +1,6 @@
 # VibeLane E-Commerce Platform
 
-A high-fashion, brutalist lifestyle & e-commerce destination inspired by contemporary editorial fashion aesthetics. Built with **React 19**, **Vite**, **Tailwind CSS v4**, **Lenis Smooth Scroll**, and **Framer Motion** on the client, and backed by a robust **Node.js**, **Express**, and **MongoDB Atlas** API.
+A high-fashion, brutalist lifestyle & e-commerce destination inspired by contemporary editorial fashion aesthetics. Built with **React 19**, **Vite**, **Tailwind CSS v4**, **Lenis Smooth Scroll**, and **Framer Motion** on the client, and backed by a robust **Node.js**, **Express**, and **Supabase (PostgreSQL)** API service.
 
 ---
 
@@ -29,16 +29,19 @@ A high-fashion, brutalist lifestyle & e-commerce destination inspired by contemp
 - **Decoupled Architecture**:
    - Centralized API & service layer (`services/productService.js`, `hooks/useProducts.js`).
    - React Router v7 (`react-router-dom`) with multi-route setup (`/`, `/privacy`, `/terms`).
+   - Production-ready SPA routing fallback via `vercel.json`.
 - **Design Tokens & Palette**:
    - Luxury Warm Cream (`#EDE4DD`), Pitch Black (`#000000`), Dark Charcoal (`#101010` / `#141414`), and Fashion Accent Selection (`#F31919DC`).
 
 ### Backend (RESTful API & Database Architecture)
 
 - **Express.js (ES Modules)**:
-   - Clean modular layered pattern (`controllers/`, `routes/`, `services/`, `models/`, `middleware/`, `config/`, `utils/`).
-- **MongoDB Atlas & Mongoose**:
-   - Robust `Product` schema storing dual perspectives (`primaryImage`, `hoverImage`), stock counts, categories, pricing, badges, and chronological indexing.
-   - **Automated Database Seeding**: Pre-seeds a full 16-item curated lookbook collection on initial setup if the database is empty (`seedProducts.js`).
+   - Clean modular layered pattern (`controllers/`, `routes/`, `services/`, `middleware/`, `config/`, `utils/`).
+   - Multi-origin CORS support with automatic trimming and `*.vercel.app` support.
+- **PostgreSQL on Supabase**:
+   - Cloud relational database managed via `@supabase/supabase-js`.
+   - Structured `products` table schema with Row Level Security (RLS) policies and performance indexes.
+   - **Automated Database Seeding**: Pre-seeds a full 16-item curated lookbook collection via `npm run seed:supabase`.
 - **Operational Error Handling**:
    - Custom `AppError` class, `asyncHandler` wrappers, and centralized `errorHandler` middleware.
 - **Standardized Response Shapes**:
@@ -46,12 +49,12 @@ A high-fashion, brutalist lifestyle & e-commerce destination inspired by contemp
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```text
 VibeLane-Ecom/
 ├── frontend/                     # Client Application (React 19 + Vite + Tailwind v4)
-│   ├── public/                   # Static assets & minimalist favicon.svg
+│   ├── public/                   # Static assets, product images & favicon
 │   ├── src/
 │   │   ├── assets/               # Brand assets & static media
 │   │   ├── components/           # Reusable UI components
@@ -66,24 +69,27 @@ VibeLane-Ecom/
 │   │   ├── utils/                # Constants & helpers (constants.js)
 │   │   ├── App.jsx               # Application root layout with Lenis & React Router
 │   │   └── main.jsx              # React DOM 19 entrypoint
+│   ├── .env.example              # Frontend environment variables template
 │   ├── index.html                # HTML entry with typography (Inter, Inter Tight)
+│   ├── vercel.json               # SPA rewrites for Vercel deployment
 │   ├── vite.config.js            # Vite config with @tailwindcss/vite & API reverse proxy
 │   └── package.json
 │
-├── backend/                      # API Server (Node.js + Express + Mongoose)
+├── backend/                      # API Server (Node.js + Express + Supabase PostgreSQL)
 │   ├── src/
-│   │   ├── config/               # Database connection (db.js)
+│   │   ├── config/               # Supabase client & DB connection (db.js)
 │   │   ├── controllers/          # Request handlers (productController.js, healthController.js)
 │   │   ├── middleware/           # Middlewares (errorHandler.js, asyncHandler.js)
-│   │   ├── models/               # Mongoose schema (Product.js)
+│   │   ├── models/               # Mock data fallback (mockData.js)
 │   │   ├── routes/               # Express API routes (productRoutes.js, index.js)
-│   │   ├── scripts/              # Seed scripts (seedProducts.js)
+│   │   ├── scripts/              # Seed scripts (seedSupabase.js)
 │   │   ├── services/             # Business logic layer (productService.js, cartService.js)
 │   │   ├── utils/                # API helpers (ApiResponse.js, AppError.js)
 │   │   ├── app.js                # Express app setup & CORS configuration
 │   │   └── server.js             # Server listener & bootstrap entrypoint
-│   ├── .env.example              # Environment variables template
-│   ├── .env                      # Local environment configuration
+│   ├── supabase_schema.sql       # PostgreSQL table schema and RLS policies
+│   ├── .env.example              # Backend environment variables template
+│   ├── .env                      # Local backend environment configuration
 │   └── package.json
 │
 ├── .gitignore                    # Root gitignore rules
@@ -99,7 +105,7 @@ VibeLane-Ecom/
 
 - **Node.js**: v18.0.0 or higher
 - **npm**: v9.0.0 or higher
-- **MongoDB**: Local MongoDB instance or free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+- **Supabase Account**: Free project created on [supabase.com](https://supabase.com)
 
 ### 2. Install Dependencies
 
@@ -109,7 +115,7 @@ Install dependencies for both frontend and backend concurrently from the root di
 npm run install:all
 ```
 
-Or install them individually:
+Or individually:
 
 ```bash
 # Frontend
@@ -119,36 +125,71 @@ npm --prefix frontend install
 npm --prefix backend install
 ```
 
-### 3. Configure Environment Variables
+### 3. Database Setup (Supabase PostgreSQL)
 
-Create `backend/.env` with your settings (reference `backend/.env.example`):
+1. Open your Supabase Project **SQL Editor**.
+2. Run the SQL script found in `backend/supabase_schema.sql`:
+
+   ```sql
+   CREATE TABLE IF NOT EXISTS public.products (
+     id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+     item_number VARCHAR(100) NOT NULL,
+     name VARCHAR(255) NOT NULL,
+     slug VARCHAR(255),
+     category VARCHAR(100) NOT NULL,
+     price NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+     badge VARCHAR(50) DEFAULT '',
+     primary_image TEXT NOT NULL,
+     hover_image TEXT NOT NULL,
+     description TEXT DEFAULT '',
+     in_stock BOOLEAN DEFAULT TRUE,
+     stock_quantity INTEGER DEFAULT 20,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+   );
+
+   ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+   CREATE POLICY "Allow public read access on products" ON public.products FOR SELECT TO public USING (true);
+   CREATE POLICY "Allow write access on products" ON public.products FOR ALL TO public USING (true) WITH CHECK (true);
+   ```
+
+### 4. Configure Environment Variables
+
+#### Backend (`backend/.env`):
 
 ```env
 PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
 API_PREFIX=/api/v1
-MONGO_URI=your_mongodb_connection_string
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-supabase-publishable-or-anon-key
 ```
 
-### 4. Seed the Database (Optional)
+#### Frontend (`frontend/.env`):
 
-To seed or reset the database with the curated 16-item editorial catalog:
+```env
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+### 5. Seed Database
+
+Seed the curated 16-item lookbook into your Supabase database:
 
 ```bash
 cd backend
-node src/scripts/seedProducts.js
+npm run seed:supabase
 ```
 
-### 5. Run the Application
+### 6. Run the Application Locally
 
-Start both the backend server and frontend client concurrently:
+Start both backend server and frontend client concurrently:
 
 ```bash
 npm run dev
 ```
 
-Or run each service in separate terminals:
+Or in separate terminal tabs:
 
 - **Frontend** (`http://localhost:5173`):
    ```bash
@@ -161,40 +202,75 @@ Or run each service in separate terminals:
 
 ---
 
-## API Endpoints
+## 🌐 Deployment Guide
 
-All backend endpoints are prefixed with `/api/v1` (proxied in the frontend via `/api`):
+### Backend on Render
 
-| Method | Endpoint                      | Description                                                                                  |
-| :----- | :---------------------------- | :------------------------------------------------------------------------------------------- |
-| `GET`  | `/`                           | API status greeting                                                                          |
-| `GET`  | `/api/v1/health`              | Health check timestamp and server status                                                     |
-| `GET`  | `/api/v1/products`            | Fetch all products (supports `?category=`, `?search=`, `?sort=`, `?minPrice=`, `?maxPrice=`) |
-| `GET`  | `/api/v1/products/categories` | Retrieve distinct categories                                                                 |
-| `GET`  | `/api/v1/products/:id`        | Retrieve single product details by MongoDB `_id`, slug, or item number                       |
+1. Create a new **Web Service** on [Render](https://dashboard.render.com).
+2. Connect your Git repository.
+3. Configure settings:
+   - **Root Directory**: `backend`
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+4. Set Environment Variables:
+   - `NODE_ENV`: `production`
+   - `API_PREFIX`: `/api/v1`
+   - `SUPABASE_URL`: `https://your-project.supabase.co`
+   - `SUPABASE_KEY`: `your-supabase-key`
+   - `CLIENT_URL`: `https://your-vibelane-site.vercel.app,http://localhost:5173`
+
+### Frontend on Vercel
+
+1. Import repository on [Vercel](https://vercel.com).
+2. Configure settings:
+   - **Framework Preset**: `Vite`
+   - **Root Directory**: `frontend`
+3. Set Environment Variable:
+   - `VITE_API_BASE_URL`: `https://your-render-service.onrender.com/api/v1`
+4. Deploy!
 
 ---
 
-## Tech Stack & Libraries
+## API Endpoints
+
+All backend endpoints are prefixed with `/api/v1`:
+
+| Method | Endpoint                      | Description                                                                                  |
+| :----- | :---------------------------- | :------------------------------------------------------------------------------------------- |
+| `GET`  | `/`                           | API greeting & health check                                                                  |
+| `GET`  | `/api/v1/health`              | Health check timestamp and server status                                                     |
+| `GET`  | `/api/v1/products`            | Fetch all products (supports `?category=`, `?search=`, `?sort=`, `?minPrice=`, `?maxPrice=`) |
+| `GET`  | `/api/v1/products/categories` | Retrieve distinct product categories                                                         |
+| `GET`  | `/api/v1/products/:id`        | Retrieve single product by numeric `id`, slug, or item number                                |
+
+---
+
+## Tech Stack
 
 - **Frontend**:
-   - [React 19](https://react.dev/)
-   - [Vite](https://vitejs.dev/)
+   - [React 19](https://react.dev/) & [Vite](https://vitejs.dev/)
    - [Tailwind CSS v4](https://tailwindcss.com/)
    - [React Router v7](https://reactrouter.com/)
    - [Lenis Scroll](https://lenis.darkroom.engineering/) (`lenis/react`)
    - [Framer Motion](https://www.framer.com/motion/)
-   - [Lucide React](https://lucide.dev/) (Iconography)
-   - Google Fonts: **Inter Tight** & **Inter**
-- **Backend**:
+   - [Lucide React](https://lucide.dev/)
+- **Backend & Database**:
    - [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/)
-   - [Mongoose](https://mongoosejs.com/) & [MongoDB Atlas](https://www.mongodb.com/atlas)
+   - [Supabase](https://supabase.com/) (PostgreSQL & `@supabase/supabase-js`)
    - [Cors](https://www.npmjs.com/package/cors) & [Morgan](https://www.npmjs.com/package/morgan)
-- **Tooling**:
-   - Concurrently, Oxlint, ES Modules
+- **Deployment**:
+   - Frontend: [Vercel](https://vercel.com/)
+   - Backend: [Render](https://render.com/)
 
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Current Status
+
+The Website is under development.
