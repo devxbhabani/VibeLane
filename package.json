@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "npm.cmd --prefix frontend run dev",
-    "dev:backend": "npm.cmd --prefix backend run dev",
-    "install:all": "npm.cmd install && npm.cmd --prefix frontend install && npm.cmd --prefix backend install",
-    "build": "npm.cmd --prefix frontend run build",
-    "start": "npm.cmd --prefix backend start"
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

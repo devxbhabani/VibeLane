@@ -5,7 +5,7 @@
 	"main": "src/server.js",
 	"type": "module",
 	"scripts": {
-		"start": "nodemon src/server.js",
+		"start": "node src/server.js",
 		"dev": "nodemon src/server.js"
 	},
 	"dependencies": {
@@ -14,8 +14,7 @@
 		"express": "^4.21.2",
 		"mongoose": "^9.9.5",
 		"morgan": "^1.10.0",
-		"sharp": "^0.35.4",
-		"vibelane-ecom": "file:.."
+		"sharp": "^0.35.4"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.14"

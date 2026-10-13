@@ -12,7 +12,28 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Global Middlewares
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
+const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((url) => url.trim().replace(/\/+$/, ''));
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/+$/, '');
+      if (
+        clientUrls.includes('*') ||
+        clientUrls.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        (process.env.NODE_ENV !== 'production' && cleanOrigin.includes('localhost'))
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS origin not allowed: ${origin}`));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === 'development') {
