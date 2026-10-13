@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { ReactLenis } from "lenis/react";
 import { Home } from "./pages/Home";
-import Privacy from "./components/layout/Privacy";
-import Terms from "./components/layout/Terms";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 function App() {
 	return (

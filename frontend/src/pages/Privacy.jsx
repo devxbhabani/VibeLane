@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ShieldCheck, Lock, Eye, FileText, Sparkles, Mail } from "lucide-react";
-import { Footer } from "./Footer";
+import {
+	ArrowLeft,
+	ShieldCheck,
+	Lock,
+	Eye,
+	FileText,
+	Sparkles,
+	Mail,
+} from "lucide-react";
+import { Footer } from "../components/layout/Footer";
 
 function Privacy() {
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -19,24 +27,26 @@ function Privacy() {
 			id: "01",
 			title: "Information We Collect",
 			icon: <Eye className="w-5 h-5 text-[#EDE4DD]/80" />,
-			summary: "Data required to curate and fulfill your day-to-day fashion pieces.",
+			summary:
+				"Data required to curate and fulfill your day-to-day fashion pieces.",
 			details: [
 				"Personal details you provide when placing an order (name, shipping address, contact details, email).",
 				"Transactional information processed securely via PCI-compliant payment gateways. We never store raw payment card data on our servers.",
-				"Device and browsing telemetry (approximate geographic area, browser type, referrer URLs) used solely to enhance browsing performance and storefront responsiveness."
-			]
+				"Device and browsing telemetry (approximate geographic area, browser type, referrer URLs) used solely to enhance browsing performance and storefront responsiveness.",
+			],
 		},
 		{
 			id: "02",
 			title: "How We Use Your Data",
 			icon: <FileText className="w-5 h-5 text-[#EDE4DD]/80" />,
-			summary: "Purely to deliver high-quality apparel and frictionless shopping.",
+			summary:
+				"Purely to deliver high-quality apparel and frictionless shopping.",
 			details: [
 				"Order processing, fulfillment, and real-time shipment updates.",
 				"Personalized aesthetic discovery and product recommendations based on seasonal lookbooks.",
 				"Direct client communication regarding order status, return authorizations, or security notices.",
-				"Preventing fraudulent activity and protecting the integrity of our platform."
-			]
+				"Preventing fraudulent activity and protecting the integrity of our platform.",
+			],
 		},
 		{
 			id: "03",
@@ -46,8 +56,8 @@ function Privacy() {
 			details: [
 				"All transmissions to and from VibeLane are protected with modern TLS 1.3 encryption protocols.",
 				"Access to order logs is restricted to authorized personnel under least-privilege principles.",
-				"Routine automated security scans to protect against vulnerabilities and unauthorized intrusions."
-			]
+				"Routine automated security scans to protect against vulnerabilities and unauthorized intrusions.",
+			],
 		},
 		{
 			id: "04",
@@ -57,20 +67,21 @@ function Privacy() {
 			details: [
 				"We collaborate only with vetted logistics carriers (DHL, BlueDart, FedEx) solely for parcel delivery.",
 				"Trusted payment providers process transactions under strict confidentiality and international compliance standards.",
-				"We do not sell customer lists to third-party ad brokers or data aggregators."
-			]
+				"We do not sell customer lists to third-party ad brokers or data aggregators.",
+			],
 		},
 		{
 			id: "05",
 			title: "Your Rights & Controls",
 			icon: <Sparkles className="w-5 h-5 text-[#EDE4DD]/80" />,
-			summary: "Complete authority over your identity and digital footprint.",
+			summary:
+				"Complete authority over your identity and digital footprint.",
 			details: [
 				"Request a full copy of the personal information stored in your profile at any time.",
 				"Request immediate rectification or permanent erasure of your user data (Right to be Forgotten).",
-				"Opt-out of promotional communications instantly with single-click unsubscribe links."
-			]
-		}
+				"Opt-out of promotional communications instantly with single-click unsubscribe links.",
+			],
+		},
 	];
 
 	return (
@@ -107,14 +118,18 @@ function Privacy() {
 
 					<h1
 						className="text-5xl md:text-7xl lg:text-8xl font-black tracking-[-0.03em] uppercase leading-[0.9] text-[#EDE4DD]"
-						style={{ fontFamily: "'Inter Tight', -apple-system, sans-serif" }}
+						style={{
+							fontFamily: "'Inter Tight', -apple-system, sans-serif",
+						}}
 					>
 						Privacy <br />
 						<span className="text-zinc-600">Policy</span>
 					</h1>
 
 					<p className="max-w-2xl text-base md:text-lg text-zinc-400 font-normal leading-relaxed pt-2">
-						At VibeLane, your privacy is as curated as our garments. We honor your trust by securing your data with uncompromising standards and absolute transparency.
+						At VibeLane, your privacy is as curated as our garments. We
+						honor your trust by securing your data with uncompromising
+						standards and absolute transparency.
 					</p>
 
 					<div
@@ -127,20 +142,30 @@ function Privacy() {
 				{/* Quick Metadata Info */}
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-10 border-b border-white/10 text-xs font-mono uppercase tracking-wider text-zinc-400">
 					<div>
-						<span className="text-zinc-600 block mb-1">Effective Date</span>
-						<span className="text-white font-medium">January 01, 2026</span>
+						<span className="text-zinc-600 block mb-1">
+							Effective Date
+						</span>
+						<span className="text-white font-medium">
+							January 01, 2026
+						</span>
 					</div>
 					<div>
 						<span className="text-zinc-600 block mb-1">Jurisdiction</span>
 						<span className="text-white font-medium">Kolkata, India</span>
 					</div>
 					<div>
-						<span className="text-zinc-600 block mb-1">Data Controller</span>
-						<span className="text-white font-medium">VibeLane Studio</span>
+						<span className="text-zinc-600 block mb-1">
+							Data Controller
+						</span>
+						<span className="text-white font-medium">
+							VibeLane Studio
+						</span>
 					</div>
 					<div>
 						<span className="text-zinc-600 block mb-1">Inquiries</span>
-						<span className="text-white font-medium">support@vibelane.com</span>
+						<span className="text-white font-medium">
+							support@vibelane.com
+						</span>
 					</div>
 				</div>
 
@@ -195,7 +220,9 @@ function Privacy() {
 							Have questions regarding your privacy?
 						</h3>
 						<p className="text-sm text-zinc-400 max-w-xl">
-							Reach out to our Data Privacy Officer directly. We respond to all data inquiries and deletion requests within 48 business hours.
+							Reach out to our Data Privacy Officer directly. We respond
+							to all data inquiries and deletion requests within 48
+							business hours.
 						</p>
 					</div>
 
