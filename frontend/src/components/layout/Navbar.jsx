@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingBag, ArrowUpRight, Menu, X } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 
 export const Navbar = () => {
+	const navigate = useNavigate();
 	const [scrolled, setScrolled] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const location = useLocation();
@@ -47,7 +48,9 @@ export const Navbar = () => {
 					>
 						<span
 							className="text-xl md:text-2xl font-black tracking-[-0.03em] uppercase text-[#EDE4DD] transition-transform duration-300 group-hover:scale-[1.02]"
-							style={{ fontFamily: "'Inter Tight', -apple-system, sans-serif" }}
+							style={{
+								fontFamily: "'Inter Tight', -apple-system, sans-serif",
+							}}
 						>
 							VIBELANE
 						</span>
@@ -80,8 +83,9 @@ export const Navbar = () => {
 						<span>22.57° N / 88.36° E</span>
 					</div>
 
-					<button
+					<div
 						type="button"
+						onClick={() => navigate(`/bag`)}
 						className="group relative flex items-center gap-2 px-3.5 py-1.5 rounded-xs border border-white/15 bg-white/5 hover:bg-[#EDE4DD] hover:text-black text-[#EDE4DD] text-[11px] font-mono tracking-widest uppercase transition-all duration-300 cursor-pointer"
 						aria-label="View Shopping Bag"
 					>
@@ -90,7 +94,7 @@ export const Navbar = () => {
 						<span className="text-[10px] px-1 py-0.2 rounded-xs bg-white/10 group-hover:bg-black/10 font-bold">
 							[{cartItemCount}]
 						</span>
-					</button>
+					</div>
 
 					{/* Mobile Menu Toggle */}
 					<button
@@ -99,7 +103,11 @@ export const Navbar = () => {
 						className="md:hidden p-1.5 text-[#EDE4DD]/80 hover:text-[#EDE4DD] cursor-pointer"
 						aria-label="Toggle navigation menu"
 					>
-						{mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+						{mobileOpen ? (
+							<X className="w-5 h-5" />
+						) : (
+							<Menu className="w-5 h-5" />
+						)}
 					</button>
 				</div>
 			</div>

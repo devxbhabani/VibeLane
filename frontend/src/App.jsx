@@ -8,6 +8,7 @@ import Terms from "./pages/Terms";
 import { Navbar } from "./components/layout/Navbar";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import Bag from "./pages/Bag";
 
 function App() {
 	return (
@@ -32,6 +33,7 @@ function App() {
 								path="/products/:slug"
 								element={<ProductDetail />}
 							/>
+							<Route exact path="/bag" element={<Bag />} />
 							<Route path="*" element={<NotFound />} />
 						</Routes>
 					</Router>
