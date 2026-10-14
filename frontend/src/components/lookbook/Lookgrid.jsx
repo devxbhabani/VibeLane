@@ -1,8 +1,10 @@
 import React from "react";
 import useProducts from "../../hooks/useProducts";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function Lookgrid() {
+	const navigate = useNavigate();
 	const { products, loading, error } = useProducts();
 	const [activeCategory, setActiveCategory] = React.useState("All");
 
@@ -166,6 +168,7 @@ function Lookgrid() {
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true, margin: "-100px" }}
 							transition={{ duration: 0.9, ease: "easeOut" }} // Smooth timing
+							onClick={() => navigate(`/products/${item.slug}`)}
 						>
 							<div
 								className={`relative overflow-hidden bg-[#141414] rounded-sm select-none ${style.grow === false ? "flex-none" : "grow"} ${style.aspect}`}
