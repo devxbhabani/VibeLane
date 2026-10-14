@@ -37,7 +37,7 @@ function Lookgrid() {
 		"cursor-pointer font-medium relative inline-block w-fit leading-normal text-white transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-[#EDE4DD] after:transition-all after:duration-300 hover:after:w-full group-hover:after:w-full";
 
 	return (
-		<div className="mx-6 md:mx-10 mt-14 mb-24">
+		<div id="lookbook" className="mx-6 md:mx-10 mt-14 mb-24 scroll-mt-24">
 			{/* Category Filter Pills */}
 			<div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-white/10 select-none">
 				{categories.map((cat) => {

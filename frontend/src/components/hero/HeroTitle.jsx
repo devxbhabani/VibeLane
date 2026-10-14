@@ -17,7 +17,7 @@ function HeroTitle() {
 	}, []);
 
 	return (
-		<div className="w-full px-4 md:px-6 pt-10 select-none">
+		<div className="w-full px-4 md:px-6 pt-24 md:pt-28 select-none">
 			<div className="w-full flex items-center justify-center overflow-hidden">
 				<h1
 					className="text-[19.8vw] font-black tracking-[-0.02em] leading-[0.80] uppercase text-[#EDE4DD] flex whitespace-nowrap"

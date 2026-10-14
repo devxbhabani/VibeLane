@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { fetchHealth } from "../services/api";
 import HeroTitle from "../components/hero/HeroTitle";
 import Lookgrid from "../components/lookbook/Lookgrid";
-import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import Manifesto from "../components/layout/Manifesto";
 

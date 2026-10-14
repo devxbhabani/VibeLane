@@ -1,36 +1,47 @@
-import { useState, useEffect, useCallback } from "react";
-import { getProducts } from "../services/productService";
+import { useState, useMemo } from "react";
+import { useApp } from "../context/AppContext";
 
 export const useProducts = (initialFilters = {}) => {
-	const [products, setProducts] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const { products: allProducts, loading, error, refetchProducts } = useApp();
 	const [filters, setFilters] = useState(initialFilters);
 
-	const loadProducts = useCallback(async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const data = await getProducts(filters);
-			setProducts(data);
-		} catch (err) {
-			setError(err.message || "Failed to load products");
-		} finally {
-			setLoading(false);
-		}
-	}, [filters]);
+	// In-memory filter on the cached dataset
+	const products = useMemo(() => {
+		if (!allProducts || allProducts.length === 0) return [];
+		let list = [...allProducts];
 
-	useEffect(() => {
-		loadProducts();
-	}, [loadProducts]);
+		if (filters.category && filters.category !== "All") {
+			list = list.filter(
+				(p) => p.category?.toLowerCase() === filters.category.toLowerCase()
+			);
+		}
+
+		if (filters.search) {
+			const q = filters.search.toLowerCase();
+			list = list.filter(
+				(p) =>
+					p.name?.toLowerCase().includes(q) ||
+					p.description?.toLowerCase().includes(q)
+			);
+		}
+
+		if (filters.sort === "price-low") {
+			list.sort((a, b) => a.price - b.price);
+		} else if (filters.sort === "price-high") {
+			list.sort((a, b) => b.price - a.price);
+		}
+
+		return list;
+	}, [allProducts, filters]);
 
 	return {
 		products,
+		allProducts,
 		loading,
 		error,
 		filters,
 		setFilters,
-		refetch: loadProducts,
+		refetch: refetchProducts,
 	};
 };
 
