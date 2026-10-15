@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import useProducts from "../../hooks/useProducts";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -6,15 +6,15 @@ import { useNavigate } from "react-router-dom";
 function Lookgrid() {
 	const navigate = useNavigate();
 	const { products, loading, error } = useProducts();
-	const [activeCategory, setActiveCategory] = React.useState("All");
+	const [activeCategory, setActiveCategory] = useState("All");
 
-	const categories = React.useMemo(() => {
+	const categories = useMemo(() => {
 		if (!products || products.length === 0) return ["All"];
 		const set = new Set(products.map((p) => p.category).filter(Boolean));
 		return ["All", ...Array.from(set)];
 	}, [products]);
 
-	const filteredProducts = React.useMemo(() => {
+	const filteredProducts = useMemo(() => {
 		if (!products) return [];
 		if (activeCategory === "All") return products;
 		return products.filter((p) => p.category === activeCategory);
