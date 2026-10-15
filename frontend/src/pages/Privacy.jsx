@@ -9,7 +9,6 @@ import {
 	Sparkles,
 	Mail,
 } from "lucide-react";
-import { Footer } from "../components/layout/Footer";
 
 function Privacy() {
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -86,30 +85,8 @@ function Privacy() {
 
 	return (
 		<div className="min-h-screen flex flex-col bg-black text-[#EDE4DD] selection:bg-[#f31919dc] selection:text-white">
-			{/* Header Navigation Bar */}
-			<header className="w-full px-6 md:px-12 pt-8 pb-6 flex items-center justify-between border-b border-white/10 backdrop-blur-md sticky top-0 z-30 bg-black/80">
-				<Link
-					to="/"
-					className="group inline-flex items-center gap-2 text-xs uppercase tracking-widest font-mono text-zinc-400 hover:text-white transition-colors"
-				>
-					<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-					<span>Back to Lookbook</span>
-				</Link>
-
-				<Link
-					to="/"
-					className="text-2xl font-black tracking-tighter uppercase text-[#EDE4DD] hover:opacity-80 transition-opacity"
-				>
-					VibeLane
-				</Link>
-
-				<div className="text-xs font-mono text-zinc-500 uppercase tracking-widest hidden sm:block">
-					Legal / Rev. 2026
-				</div>
-			</header>
-
-			{/* Hero Banner */}
-			<main className="flex-1 w-full max-w-6xl mx-auto px-6 md:px-12 py-16 md:py-24">
+			{/* Hero Banner with top padding for global transparent Navbar */}
+			<main className="flex-1 w-full max-w-6xl mx-auto px-6 md:px-12 pt-28 md:pt-36 pb-16 md:pb-24">
 				<div className="space-y-6">
 					<div className="inline-flex items-center gap-2 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-[#EDE4DD] bg-white/5 border border-white/10 rounded-full">
 						<ShieldCheck className="w-3.5 h-3.5 text-zinc-300" />
@@ -234,9 +211,6 @@ function Privacy() {
 					</a>
 				</div>
 			</main>
-
-			{/* Global Unified Footer */}
-			<Footer />
 		</div>
 	);
 }

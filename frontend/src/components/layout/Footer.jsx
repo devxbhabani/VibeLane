@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Manifesto from "./Manifesto";
 
 export const Footer = () => {
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -18,7 +19,8 @@ export const Footer = () => {
 
 	return (
 		<>
-			<div className="mx-8 mb-8">
+			<Manifesto />
+			<div className="mx-8 pb-8">
 				<div
 					className={`w-full h-0.5 bg-[#EDE4DD] mt-10 mb-4 origin-left transition-transform duration-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
 						isLoaded ? "scale-x-100" : "scale-x-0"

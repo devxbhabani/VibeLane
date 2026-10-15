@@ -9,20 +9,25 @@ import { Navbar } from "./components/layout/Navbar";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import Bag from "./pages/Bag";
+import ScrollToTop from "./components/layout/ScrollToTop";
+import { Footer } from "./components/layout/Footer";
 
 function App() {
 	return (
 		<ReactLenis
 			root
 			options={{
-				lerp: 0.1, // Adjust this to make it more or less smooth (lower = smoother/slower)
-				duration: 1.5,
+				lerp: 0.09, // Adjust this to make it more or less smooth (lower = smoother/slower)
+				wheelMultiplier: 1.1,
+				touchMultiplier: 1.5,
+				// duration: 1.5,
 				smoothWheel: true,
 			}}
 		>
-			<div className="app-container selection:bg-[#f31919dc]">
+			<div className="app-container selection:bg-[#f31919dc] bg-black text-white">
 				<AppProvider>
 					<Router>
+						<ScrollToTop />
 						<Navbar />
 						<Routes>
 							<Route exact path="/" element={<Home />} />
@@ -36,6 +41,7 @@ function App() {
 							<Route exact path="/bag" element={<Bag />} />
 							<Route path="*" element={<NotFound />} />
 						</Routes>
+						<Footer />
 					</Router>
 				</AppProvider>
 			</div>
