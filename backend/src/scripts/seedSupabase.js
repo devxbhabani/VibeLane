@@ -52,7 +52,7 @@ async function runSeed() {
 		description: p.description || "",
 		in_stock: p.inStock ?? true,
 		stock_quantity: p.stockQuantity ?? 20,
-		sizes: p.sizes || ["S", "M", "L", "XL", "2XL"],
+		sizes: Array.isArray(p.sizes) ? p.sizes : null,
 	}));
 
 	console.log(`Inserting ${rows.length} curated products...`);

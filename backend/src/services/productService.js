@@ -19,7 +19,7 @@ const formatProduct = (p) => {
 		description: p.description || "",
 		inStock: p.in_stock,
 		stockQuantity: p.stock_quantity,
-		sizes: p.sizes || ["S", "M", "L", "XL", "2XL"],
+		sizes: p.sizes ?? null,
 		createdAt: p.created_at,
 		updatedAt: p.updated_at,
 	};
