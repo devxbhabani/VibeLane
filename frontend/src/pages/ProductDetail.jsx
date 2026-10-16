@@ -2,12 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
 import useProducts from "../hooks/useProducts";
 import { useParams } from "react-router-dom";
+import { useApp } from "../context/AppContext";
+import { Check } from "lucide-react";
 
 function ProductDetail() {
+	const { addToCart } = useApp();
 	const { slug } = useParams();
 	const { products, loading: contextLoading } = useProducts();
 	const [selectedSize, setSelectedSize] = useState("M");
 	const [productCount, setProductCount] = useState(1);
+	const [isAdded, setIsAdded] = useState(false);
 
 	const product = useMemo(() => {
 		return products.find((p) => p.slug === slug || String(p.id) === slug);
@@ -24,6 +28,7 @@ function ProductDetail() {
 			</div>
 		);
 	}
+
 	if (!product) {
 		return (
 			<div className="text-white p-10 font-mono">
@@ -34,6 +39,18 @@ function ProductDetail() {
 			</div>
 		);
 	}
+
+	const addToBagHandler = () => {
+		const sizeToSave =
+			product.sizes && product.sizes.length > 0 ? selectedSize : null;
+		addToCart(product, productCount, sizeToSave);
+		console.log("Item added");
+
+		setIsAdded(true);
+		setTimeout(() => {
+			setIsAdded(false);
+		}, 3000);
+	};
 
 	return (
 		<div className="pt-20 px-8 md:px-12 flex justify-between gap-5 items-start w-full min-h-screen">
@@ -138,12 +155,39 @@ function ProductDetail() {
 				</div> */}
 				<div className="mt-8 mr-5">
 					<button
+						onClick={() => addToBagHandler()}
 						type="button"
-						className="w-full h-13 bg-[#EDE4DD] hover:bg-white text-black uppercase tracking-widest text-xs font-bold transition-all duration-300 active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2"
+						className={`relative w-full h-13 overflow-hidden uppercase tracking-widest text-xs font-bold transition-all duration-500 cursor-pointer flex items-center justify-center active:scale-[0.98] ${
+							isAdded
+								? "text-black shadow-lg shadow-emerald-500/20"
+								: "text-black"
+						}`}
 					>
-						<span>Add to Bag</span>
-						<span className="text-[11px] text-zinc-600 font-medium">
-							— ${(product.price * productCount).toFixed(2)}
+						{/* Base Cream Background */}
+						<span className="absolute inset-0 bg-[#EDE4DD] transition-colors duration-400 hover:bg-white" />
+
+						{/* Emerald Green Wipe Layer */}
+						<span
+							className={`absolute inset-0 bg-emerald-400 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+								isAdded ? "scale-x-100" : "scale-x-0"
+							} origin-left`}
+						/>
+
+						{/* Button Content / Label with smooth kinetic fade & slide */}
+						<span className="relative z-10 flex items-center justify-center gap-2">
+							{isAdded ? (
+								<span className="flex items-center gap-2 tracking-wider animate-in fade-in zoom-in-95 duration-300">
+									ADDED TO BAG
+									<Check className="w-4 h-4 stroke-[2.5] text-black" />
+								</span>
+							) : (
+								<>
+									<span>Add to Bag</span>
+									<span className="text-[11px] text-zinc-600 font-medium">
+										— ${(product.price * productCount).toFixed(2)}
+									</span>
+								</>
+							)}
 						</span>
 					</button>
 				</div>
