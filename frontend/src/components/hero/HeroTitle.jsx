@@ -45,7 +45,7 @@ function HeroTitle() {
 			</div>
 
 			<div
-				className={`w-full h-1.25 bg-[#EDE4DD] mt-2 origin-left transition-transform duration-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+				className={`w-full h-1.25 bg-[#EDE4DD] mt-2 origin-left transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
 					isLoaded ? "scale-x-100" : "scale-x-0"
 				}`}
 			/>
