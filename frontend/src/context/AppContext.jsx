@@ -10,6 +10,12 @@ import { getProducts } from "../services/productService";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+	const getCartKey = (currentUser) => {
+		return currentUser
+			? `vibelane_cart_${currentUser.id}`
+			: "vibelane_cart_guest";
+	};
+
 	const [token, setToken] = useState(
 		() => localStorage.getItem("vibelane_token") || null,
 	);
@@ -24,8 +30,11 @@ export const AppProvider = ({ children }) => {
 
 	const [cart, setCart] = useState(() => {
 		try {
-			const savedCart = localStorage.getItem("vibelane_cart");
-			return savedCart ? JSON.parse(savedCart) : [];
+			const savedUser = localStorage.getItem("vibelane_user");
+			const persedUser = savedUser ? JSON.parse(savedUser) : null;
+			const key = getCartKey(persedUser);
+			const savedCart = localStorage.getItem(key);
+			return savedCart ? JSON.perse(savedCart) : [];
 		} catch (e) {
 			console.error("Failed to load cart from localStorage", e);
 			return [];
@@ -34,11 +43,12 @@ export const AppProvider = ({ children }) => {
 
 	useEffect(() => {
 		try {
-			localStorage.setItem("vibelane_cart", JSON.stringify(cart));
+			const key = getCartKey(user);
+			localStorage.setItem(key, JSON.stringify(cart));
 		} catch (e) {
-			console.error("Failed to save cart to localStorage", e);
+			console.error("Failed to save cart", e);
 		}
-	}, [cart]);
+	}, [cart, user]);
 
 	// Global cached product state
 	const [products, setProducts] = useState([]);
@@ -116,6 +126,10 @@ export const AppProvider = ({ children }) => {
 		setToken(userToken);
 		localStorage.setItem("vibelane_user", JSON.stringify(userData));
 		localStorage.setItem("vibelane_token", userToken);
+
+		const userCartKey = `vibelane_cart_${userData.id}`;
+		const userCart = localStorage.getItem(userCartKey);
+		setCart(userCart ? JSON.perse(userCart) : []);
 	};
 
 	const handleLogout = () => {
@@ -123,6 +137,10 @@ export const AppProvider = ({ children }) => {
 		setToken(null);
 		localStorage.removeItem("vibelane_user");
 		localStorage.removeItem("vibelane_token");
+
+		const guestCartKey = `vibelane_cart_guest`;
+		const guestCart = localStorage.getItem(guestCartKey);
+		setCart(guestCart ? JSON.perse(guestCart) : []);
 	};
 
 	useEffect(() => {
