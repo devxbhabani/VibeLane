@@ -168,7 +168,8 @@ function Bag() {
 							</div>
 							<button
 								type="button"
-								className="mt-6 w-full py-4 bg-[#EDE4DD] hover:bg-white text-black font-mono uppercase tracking-widest text-xs font-bold transition-all duration-300 cursor-pointer"
+								onClick={() => navigate("/checkout")}
+								className="mt-6 w-full py-4 bg-[#EDE4DD] hover:bg-white text-black font-mono uppercase tracking-widest text-xs font-bold transition-all duration-300 cursor-pointer active:scale-[0.99]"
 							>
 								Proceed to Checkout
 							</button>

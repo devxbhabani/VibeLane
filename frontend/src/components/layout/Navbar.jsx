@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingBag, ArrowUpRight, Menu, X } from "lucide-react";
+import { ShoppingBag, ArrowUpRight, Menu, X, User } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 
 export const Navbar = () => {
@@ -8,7 +8,7 @@ export const Navbar = () => {
 	const [scrolled, setScrolled] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const location = useLocation();
-	const { cart } = useApp();
+	const { cart, user, token, handleLogout } = useApp();
 
 	const cartItemCount = Array.isArray(cart)
 		? cart.reduce((total, item) => total + (item.quantity || 1), 0)
@@ -78,10 +78,10 @@ export const Navbar = () => {
 
 				{/* Right: Actions (Cart & Quick Actions) */}
 				<div className="flex items-center gap-4 md:gap-6">
-					<div className="hidden lg:flex items-center gap-2 text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
+					{/* <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
 						<span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
 						<span>22.57° N / 88.36° E</span>
-					</div>
+					</div> */}
 
 					<div
 						type="button"
@@ -94,6 +94,78 @@ export const Navbar = () => {
 						<span className="text-[10px] px-1 py-0.2 rounded-xs bg-white/10 group-hover:bg-black/10 font-bold">
 							[{cartItemCount}]
 						</span>
+					</div>
+
+					{/* NEW: Profile Dropdown */}
+					<div className="relative group">
+						<button
+							onClick={() => navigate(user ? "/account" : "/login")}
+							className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-[#EDE4DD]/70 hover:text-[#EDE4DD] transition-colors py-2 cursor-pointer"
+						>
+							<User className="w-3.5 h-3.5" />
+							<span
+								className="hidden lg:inline"
+								style={{
+									fontFamily:
+										"'Inter Tight', -apple-system, sans-serif",
+								}}
+							>
+								{user
+									? user.name?.split(" ")[0] || "CLIENT"
+									: "ACCOUNT"}
+							</span>
+						</button>
+
+						{/* Hover Dropdown Menu */}
+						<div className="absolute right-0 top-full pt-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50 min-w-44">
+							<div className="bg-[#0e0e0e] border border-white/15 p-2 font-mono text-xs uppercase shadow-2xl backdrop-blur-md">
+								{user ? (
+									<>
+										<div className="px-3 py-2 border-b border-white/10 mb-1">
+											<p className="text-[10px] text-zinc-500 tracking-widest">
+												AUTHORIZED
+											</p>
+											<p
+												className="text-[#EDE4DD] lowercase font-bold truncate"
+												style={{
+													fontFamily:
+														"'Inter Tight', -apple-system, sans-serif",
+												}}
+											>
+												{user.email}
+											</p>
+										</div>
+										<Link
+											to="/account"
+											className="flex items-center gap-2 px-3 py-2 text-zinc-300 hover:text-black hover:bg-[#EDE4DD] transition-colors tracking-wider"
+										>
+											Archive Profile
+										</Link>
+										<button
+											onClick={handleLogout}
+											className="w-full text-left flex items-center gap-2 px-3 py-2 text-red-400 hover:text-white hover:bg-red-500/20 transition-colors tracking-wider cursor-pointer"
+										>
+											Sign Out
+										</button>
+									</>
+								) : (
+									<>
+										<Link
+											to="/login"
+											className="flex items-center gap-2 px-3 py-2 text-zinc-300 hover:text-black hover:bg-[#EDE4DD] transition-colors tracking-wider"
+										>
+											Sign In
+										</Link>
+										<Link
+											to="/signup"
+											className="flex items-center gap-2 px-3 py-2 text-zinc-300 hover:text-black hover:bg-[#EDE4DD] transition-colors tracking-wider"
+										>
+											Create Account
+										</Link>
+									</>
+								)}
+							</div>
+						</div>
 					</div>
 
 					{/* Mobile Menu Toggle */}

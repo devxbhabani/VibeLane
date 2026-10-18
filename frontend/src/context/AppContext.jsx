@@ -10,6 +10,18 @@ import { getProducts } from "../services/productService";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+	const [token, setToken] = useState(
+		() => localStorage.getItem("vibelane_token") || null,
+	);
+	const [user, setUser] = useState(() => {
+		try {
+			const saved = localStorage.getItem("vibelane_user");
+			return saved ? JSON.parse(saved) : null;
+		} catch (e) {
+			console.error();
+		}
+	});
+
 	const [cart, setCart] = useState(() => {
 		try {
 			const savedCart = localStorage.getItem("vibelane_cart");
@@ -27,8 +39,6 @@ export const AppProvider = ({ children }) => {
 			console.error("Failed to save cart to localStorage", e);
 		}
 	}, [cart]);
-
-	const [user, setUser] = useState(null);
 
 	// Global cached product state
 	const [products, setProducts] = useState([]);
@@ -92,6 +102,29 @@ export const AppProvider = ({ children }) => {
 		setCart((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
 	};
 
+	const clearCart = () => {
+		setCart([]);
+		try {
+			localStorage.removeItem("vibelane_cart");
+		} catch (e) {
+			console.error("Failed to clear cart in localStorage", e);
+		}
+	};
+
+	const handleLoginSuccess = (userData, userToken) => {
+		setUser(userData);
+		setToken(userToken);
+		localStorage.setItem("vibelane_user", JSON.stringify(userData));
+		localStorage.setItem("vibelane_token", userToken);
+	};
+
+	const handleLogout = () => {
+		setUser(null);
+		setToken(null);
+		localStorage.removeItem("vibelane_user");
+		localStorage.removeItem("vibelane_token");
+	};
+
 	useEffect(() => {
 		fetchProducts();
 	}, [fetchProducts]);
@@ -109,6 +142,10 @@ export const AppProvider = ({ children }) => {
 				refetchProducts: () => fetchProducts(true),
 				addToCart,
 				removeFromCart,
+				clearCart,
+				token,
+				handleLoginSuccess,
+				handleLogout,
 			}}
 		>
 			{children}
