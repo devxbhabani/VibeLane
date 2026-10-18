@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const API_URL =
+	import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
 
 export const signupUser = async ({ name, email, password }) => {
 	const res = await fetch(`${API_URL}/auth/signup`, {
@@ -22,7 +23,8 @@ export const verifyotpUser = async ({ email, otp }) => {
 		body: JSON.stringify({ email, otp }),
 	});
 	const data = await res.json();
-	if (!res.ok) throw new Error(data.error || data.message || "OTP verification failed");
+	if (!res.ok)
+		throw new Error(data.error || data.message || "OTP verification failed");
 	return data;
 };
 
