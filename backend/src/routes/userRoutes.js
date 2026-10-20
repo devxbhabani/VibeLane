@@ -4,13 +4,13 @@ import {
 	updateProfile,
 	getUserOrders,
 	createOrder,
-} from "../controllers/userController";
+} from "../controllers/userController.js";
 
 const router = express.Router();
 
 router.get("/:userId/profile", getProfile);
 router.put("/:userId/profile", updateProfile);
-router.get("/userid/orders", getUserOrders);
+router.get("/:userId/orders", getUserOrders);
 router.post("/orders", createOrder);
 
 export default router;
