@@ -141,6 +141,12 @@ export const Navbar = () => {
 										>
 											Archive Profile
 										</Link>
+										<Link
+											to="/orders"
+											className="flex items-center gap-2 px-3 py-2 text-zinc-300 hover:text-black hover:bg-[#EDE4DD] transition-colors tracking-wider"
+										>
+											Your Orders
+										</Link>
 										<button
 											onClick={handleLogout}
 											className="w-full text-left flex items-center gap-2 px-3 py-2 text-red-400 hover:text-white hover:bg-red-500/20 transition-colors tracking-wider cursor-pointer"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { createUserOrder } from "../services/userService";
 import {
 	ArrowLeft,
 	ShieldCheck,
@@ -15,10 +16,11 @@ import {
 
 export default function Checkout() {
 	const navigate = useNavigate();
-	const { cart, clearCart } = useApp();
+	const { cart, clearCart, user } = useApp();
 
 	const [formData, setFormData] = useState({
-		email: "",
+		email: user?.email || "",
+		phone: "",
 		firstName: "",
 		lastName: "",
 		address: "",
@@ -26,7 +28,7 @@ export default function Checkout() {
 		city: "",
 		state: "",
 		postalCode: "",
-		country: "United States",
+		country: "India",
 		paymentMethod: "card", // "card" | "upi" | "cod"
 		cardNumber: "",
 		expiry: "",
@@ -52,20 +54,47 @@ export default function Checkout() {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleSubmitOrder = (e) => {
+	const handleSubmitOrder = async (e) => {
 		e.preventDefault();
 		if (cart.length === 0) return;
 
 		setIsSubmitting(true);
 
-		// Simulate order processing with luxury tactile feel
+		const generatedId = `VL-${Math.floor(100000 + Math.random() * 900000)}`;
+
+		try {
+			await createUserOrder({
+				order_ref: generatedId,
+				user_id: user?.id || null,
+				email: formData.email.toLowerCase(),
+				items: cart,
+				subtotal,
+				shipping_fee: shippingCost,
+				tax: estimatedTax,
+				total,
+				payment_method: formData.paymentMethod.toUpperCase(),
+				shipping_address: {
+					firstName: formData.firstName,
+					lastName: formData.lastName,
+					phone: formData.phone,
+					address: formData.address,
+					apartment: formData.apartment,
+					city: formData.city,
+					state: formData.state,
+					postalCode: formData.postalCode,
+					country: formData.country,
+				},
+			});
+		} catch (err) {
+			console.error("Order database persistence failed:", err);
+		}
+
 		setTimeout(() => {
-			const generatedId = `VL-${Math.floor(100000 + Math.random() * 900000)}`;
 			setOrderId(generatedId);
 			setIsSubmitting(false);
 			setOrderSuccess(true);
 			clearCart();
-		}, 1800);
+		}, 1200);
 	};
 
 	if (orderSuccess) {
@@ -132,10 +161,10 @@ export default function Checkout() {
 					<ArrowLeft className="w-3.5 h-3.5" />
 					Back to Bag
 				</Link>
-				<span className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
+				{/* <span className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
 					<Lock className="w-3 h-3 text-emerald-400" />
 					End-to-End Encrypted Checkout
-				</span>
+				</span> */}
 			</div>
 
 			{cart.length === 0 ? (
@@ -160,29 +189,57 @@ export default function Checkout() {
 						onSubmit={handleSubmitOrder}
 						className="lg:col-span-7 flex flex-col gap-10"
 					>
-						{/*  Contact */}
+						{/* Contact Information */}
 						<div>
 							<div className="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
 								<h2 className="font-mono text-xs uppercase tracking-[0.25em] text-[#EDE4DD] font-bold">
 									01 / Contact Information
 								</h2>
 								<span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
-									Required
+									Order Updates
 								</span>
 							</div>
-							<div className="flex flex-col gap-1.5">
-								<label className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
-									Email Address
-								</label>
-								<input
-									type="email"
-									name="email"
-									required
-									value={formData.email}
-									onChange={handleInputChange}
-									placeholder="archive@vibelane.com"
-									className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
-								/>
+
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								{/* Email Input */}
+								<div className="flex flex-col gap-1.5 font-mono">
+									<label className="text-[10px] uppercase tracking-widest text-zinc-400">
+										Email Address
+									</label>
+									<input
+										type="email"
+										name="email"
+										required
+										value={formData.email}
+										onChange={handleInputChange}
+										placeholder="archive@vibelane.com"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors"
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
+									/>
+								</div>
+
+								{/* Phone Number Input */}
+								<div className="flex flex-col gap-1.5 font-mono">
+									<label className="text-[10px] uppercase tracking-widest text-zinc-400">
+										Phone Number (For Courier Dispatch)
+									</label>
+									<input
+										type="tel"
+										name="phone"
+										required
+										value={formData.phone}
+										onChange={handleInputChange}
+										placeholder="+1 (555) 019-2834"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors"
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
+									/>
+								</div>
 							</div>
 						</div>
 
@@ -209,7 +266,11 @@ export default function Checkout() {
 										value={formData.firstName}
 										onChange={handleInputChange}
 										placeholder="Alexander"
-										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
 									/>
 								</div>
 								<div className="flex flex-col gap-1.5">
@@ -223,7 +284,11 @@ export default function Checkout() {
 										value={formData.lastName}
 										onChange={handleInputChange}
 										placeholder="Vane"
-										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
 									/>
 								</div>
 
@@ -238,7 +303,11 @@ export default function Checkout() {
 										value={formData.address}
 										onChange={handleInputChange}
 										placeholder="144 Mercer Street"
-										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
 									/>
 								</div>
 
@@ -252,7 +321,11 @@ export default function Checkout() {
 										value={formData.apartment}
 										onChange={handleInputChange}
 										placeholder="Floor 4B"
-										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
 									/>
 								</div>
 
@@ -267,7 +340,11 @@ export default function Checkout() {
 										value={formData.city}
 										onChange={handleInputChange}
 										placeholder="New York"
-										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+										className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+										style={{
+											fontFamily:
+												"'Inter Tight', -apple-system, sans-serif",
+										}}
 									/>
 								</div>
 
@@ -283,7 +360,11 @@ export default function Checkout() {
 											value={formData.state}
 											onChange={handleInputChange}
 											placeholder="NY"
-											className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+											className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+											style={{
+												fontFamily:
+													"'Inter Tight', -apple-system, sans-serif",
+											}}
 										/>
 									</div>
 									<div className="flex flex-col gap-1.5">
@@ -297,7 +378,11 @@ export default function Checkout() {
 											value={formData.postalCode}
 											onChange={handleInputChange}
 											placeholder="10012"
-											className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors font-mono"
+											className="w-full bg-[#0d0d0d] border border-white/15 px-4 py-3.5 text-sm text-[#EDE4DD] placeholder-zinc-700 focus:outline-none focus:border-[#EDE4DD] transition-colors "
+											style={{
+												fontFamily:
+													"'Inter Tight', -apple-system, sans-serif",
+											}}
 										/>
 									</div>
 								</div>

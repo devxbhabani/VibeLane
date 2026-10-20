@@ -15,6 +15,8 @@ import Signup from "./pages/Signup";
 import VerifyOtp from "./pages/VerifyOtp";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import { Footer } from "./components/layout/Footer";
+import Account from "./pages/Account";
+import Orders from "./pages/Orders";
 
 function App() {
 	return (
@@ -47,6 +49,8 @@ function App() {
 							<Route exact path="/login" element={<Login />} />
 							<Route exact path="/signup" element={<Signup />} />
 							<Route exact path="/verify-otp" element={<VerifyOtp />} />
+							<Route exact path="/account" element={<Account />} />
+							<Route exact path="/orders" element={<Orders />} />
 							<Route path="*" element={<NotFound />} />
 						</Routes>
 						<Footer />

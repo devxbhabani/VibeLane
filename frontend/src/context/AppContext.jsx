@@ -34,7 +34,7 @@ export const AppProvider = ({ children }) => {
 			const persedUser = savedUser ? JSON.parse(savedUser) : null;
 			const key = getCartKey(persedUser);
 			const savedCart = localStorage.getItem(key);
-			return savedCart ? JSON.perse(savedCart) : [];
+			return savedCart ? JSON.parse(savedCart) : [];
 		} catch (e) {
 			console.error("Failed to load cart from localStorage", e);
 			return [];
