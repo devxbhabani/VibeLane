@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { useApp } from "../../context/AppContext";
 
 function HeroTitle() {
+	const { splashFinished } = useApp();
 	const [isLoaded, setIsLoaded] = useState(false);
 	const word = "VIBELANE";
 
@@ -8,13 +10,14 @@ function HeroTitle() {
 	const delays = useMemo(() => [150, 420, 220, 520, 300, 180, 480, 360], []);
 
 	useEffect(() => {
-		// Triggers shortly after mount/reload
-		const timer = setTimeout(() => {
-			setIsLoaded(true);
-		}, 1000);
-
-		return () => clearTimeout(timer);
-	}, []);
+		// When splash screen finishes, trigger the grand VIBELANE letter drop
+		if (splashFinished) {
+			const timer = setTimeout(() => {
+				setIsLoaded(true);
+			}, 150);
+			return () => clearTimeout(timer);
+		}
+	}, [splashFinished]);
 
 	return (
 		<div className="w-full px-4 md:px-6 pt-24 md:pt-28 select-none">

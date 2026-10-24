@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AppProvider } from "./context/AppContext";
+import { AppProvider, useApp } from "./context/AppContext";
 import { ReactLenis } from "lenis/react";
 import { Home } from "./pages/Home";
 import Privacy from "./pages/Privacy";
@@ -20,34 +20,25 @@ import Orders from "./pages/Orders";
 import SplashScreen from "./components/layout/SplashScreen";
 import RouteTransitionLoader from "./components/layout/RouteTransitionLoader";
 
-function App() {
-	const [splashFinished, setSplashFinished] = useState(false);
+function AppContent() {
+	const { splashFinished, setSplashFinished } = useApp();
 
 	return (
-		<ReactLenis
-			root
-			options={{
-				lerp: 0.09, // Adjust this to make it more or less smooth (lower = smoother/slower)
-				wheelMultiplier: 1.1,
-				touchMultiplier: 1.5,
-				smoothWheel: true,
-			}}
-		>
+		<>
 			<SplashScreen onComplete={() => setSplashFinished(true)} />
 
 			<div className="app-container selection:bg-[#f31919dc] bg-black text-white">
-				<AppProvider>
-					<Router>
-						<RouteTransitionLoader />
-						<ScrollToTop />
-						<Navbar />
-						<div
-							className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-								splashFinished
-									? "opacity-100 scale-100 translate-y-0"
-									: "opacity-0 scale-[0.98] translate-y-4"
-							}`}
-						>
+				<Router>
+					<RouteTransitionLoader />
+					<ScrollToTop />
+					<Navbar />
+					<div
+						className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+							splashFinished
+								? "opacity-100 scale-100 translate-y-0"
+								: "opacity-0 scale-[0.99] translate-y-2 pointer-events-none"
+						}`}
+					>
 							<Routes>
 								<Route exact path="/" element={<Home />} />
 								<Route exact path="/privacy" element={<Privacy />} />
@@ -69,8 +60,25 @@ function App() {
 							<Footer />
 						</div>
 					</Router>
-				</AppProvider>
-			</div>
+				</div>
+		</>
+	);
+}
+
+function App() {
+	return (
+		<ReactLenis
+			root
+			options={{
+				lerp: 0.09,
+				wheelMultiplier: 1.1,
+				touchMultiplier: 1.5,
+				smoothWheel: true,
+			}}
+		>
+			<AppProvider>
+				<AppContent />
+			</AppProvider>
 		</ReactLenis>
 	);
 }

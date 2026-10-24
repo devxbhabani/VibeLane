@@ -28,6 +28,8 @@ export const AppProvider = ({ children }) => {
 		}
 	});
 
+	const [splashFinished, setSplashFinished] = useState(false);
+
 	const [cart, setCart] = useState(() => {
 		try {
 			const savedUser = localStorage.getItem("vibelane_user");
@@ -164,6 +166,8 @@ export const AppProvider = ({ children }) => {
 				token,
 				handleLoginSuccess,
 				handleLogout,
+				splashFinished,
+				setSplashFinished,
 			}}
 		>
 			{children}
