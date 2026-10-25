@@ -17,11 +17,19 @@ export default function SplashScreen({ onComplete }) {
 	const [isExiting, setIsExiting] = useState(false);
 	const [hidden, setHidden] = useState(false);
 
-	// Ultra-smooth image flip interval
+	// Preload all splash images so there is zero stutter or blank frames
+	useEffect(() => {
+		SPLASH_IMAGES.forEach((src) => {
+			const img = new Image();
+			img.src = src;
+		});
+	}, []);
+
+	// Smooth card shuffle interval
 	useEffect(() => {
 		const imgInterval = setInterval(() => {
 			setActiveImgIndex((prev) => (prev + 1) % SPLASH_IMAGES.length);
-		}, 180);
+		}, 340);
 
 		return () => clearInterval(imgInterval);
 	}, []);
@@ -30,7 +38,7 @@ export default function SplashScreen({ onComplete }) {
 	useEffect(() => {
 		let current = 0;
 		const interval = setInterval(() => {
-			const step = Math.floor(Math.random() * 3) + 2; // steady smooth increments
+			const step = Math.floor(Math.random() * 2) + 1; // consistent smooth cadence
 			current = Math.min(100, current + step);
 			setCounter(current);
 
@@ -45,14 +53,23 @@ export default function SplashScreen({ onComplete }) {
 						setHidden(true);
 						if (onComplete) onComplete();
 					}, 950);
-				}, 400);
+				}, 450);
 			}
-		}, 38);
+		}, 32);
 
 		return () => clearInterval(interval);
 	}, [onComplete]);
 
 	if (hidden) return null;
+
+	// Deterministic slight angle offset for stacked look based on index
+	const angles = [-4, 3.5, -2, 5, -3.5, 2, -5, 4];
+	const currentAngle = angles[activeImgIndex % angles.length];
+
+	// Derive the 3 visible layered cards (top, middle, bottom)
+	const topIdx = activeImgIndex;
+	const midIdx = (activeImgIndex - 1 + SPLASH_IMAGES.length) % SPLASH_IMAGES.length;
+	const botIdx = (activeImgIndex - 2 + SPLASH_IMAGES.length) % SPLASH_IMAGES.length;
 
 	return (
 		<div
@@ -73,60 +90,72 @@ export default function SplashScreen({ onComplete }) {
 
 			{/* Center Stage: Dark Card Stack + Smooth Photo Rotations */}
 			<div className="relative w-full flex-1 flex items-center justify-center">
-				{/* Dark Crimson Rotated Card Layer 1 */}
+				{/* Dark Crimson Rotated Glow Backdrop Layer */}
 				<div
-					className="absolute w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 bg-[#160507] border border-[#E11D2A]/30 transition-transform duration-700 ease-out shadow-[0_0_50px_rgba(225,29,42,0.15)]"
+					className="absolute w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 bg-[#1a0507] border border-[#E11D2A]/25 transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] shadow-[0_0_60px_rgba(225,29,42,0.18)]"
 					style={{
-						transform: `rotate(${activeImgIndex % 2 === 0 ? "12deg" : "16deg"}) scale(${
-							1 + (counter / 100) * 0.05
+						transform: `rotate(${currentAngle * 2.2}deg) scale(${
+							1 + (counter / 100) * 0.04
 						})`,
 					}}
 				/>
 
-				{/* Vibrant Deep Red Rotated Card Layer 2 */}
+				{/* Vibrant Deep Crimson Accent Square */}
 				<div
-					className="absolute w-56 h-56 sm:w-68 sm:h-68 md:w-76 md:h-76 bg-[#8A0F17] transition-transform duration-700 ease-out shadow-2xl opacity-90"
+					className="absolute w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 bg-[#700B12]/80 transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] shadow-2xl"
 					style={{
-						transform: `rotate(${activeImgIndex % 2 === 0 ? "-8deg" : "-12deg"})`,
+						transform: `rotate(${-currentAngle * 1.8}deg)`,
 					}}
 				/>
 
-				{/* Physical Layered Photo Stack */}
+				{/* Physical Layered Photo Stack of 3 actual photos */}
 				<div className="relative z-10 w-48 h-60 sm:w-56 sm:h-72 md:w-64 md:h-80 flex items-center justify-center">
-					{/* Under card 2 */}
+					{/* Bottom Layer Photo */}
 					<div
-						className="absolute w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 bg-[#181818] border border-white/10 shadow-2xl transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+						className="absolute w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 overflow-hidden rounded-sm bg-[#121212] border border-white/10 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
 						style={{
-							transform: `rotate(${activeImgIndex % 2 === 0 ? "6deg" : "-6deg"}) translate(${
-								activeImgIndex % 2 === 0 ? "8px" : "-8px"
-							}, 4px)`,
+							transform: `rotate(${-currentAngle * 1.2}deg) translate(${currentAngle * 2}px, 6px) scale(0.92)`,
+							filter: "brightness(0.65) contrast(1.1)",
 						}}
-					/>
+					>
+						<img
+							src={SPLASH_IMAGES[botIdx]}
+							alt=""
+							className="w-full h-full object-cover"
+						/>
+						<div className="absolute inset-0 bg-black/40" />
+					</div>
 
-					{/* Under card 1 */}
+					{/* Middle Layer Photo */}
 					<div
-						className="absolute w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 bg-[#141414] border border-white/10 shadow-2xl transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+						className="absolute w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 overflow-hidden rounded-sm bg-[#151515] border border-white/15 shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
 						style={{
-							transform: `rotate(${activeImgIndex % 2 === 0 ? "-4deg" : "4deg"}) translate(${
-								activeImgIndex % 2 === 0 ? "-6px" : "6px"
-							}, -2px)`,
+							transform: `rotate(${currentAngle * 1.1}deg) translate(${-currentAngle * 1.5}px, 2px) scale(0.96)`,
+							filter: "brightness(0.85)",
 						}}
-					/>
+					>
+						<img
+							src={SPLASH_IMAGES[midIdx]}
+							alt=""
+							className="w-full h-full object-cover"
+						/>
+						<div className="absolute inset-0 bg-black/20" />
+					</div>
 
-					{/* Active Top Card Container */}
+					{/* Active Top Layer Photo */}
 					<div
-						className="relative w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.95)] bg-[#101010] border border-white/25 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+						className="relative z-10 w-44 h-56 sm:w-52 sm:h-64 md:w-56 md:h-72 overflow-hidden rounded-sm bg-[#1c1c1c] border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
 						style={{
-							transform: `rotate(${activeImgIndex % 2 === 0 ? "-1.5deg" : "1.5deg"})`,
+							transform: `rotate(${currentAngle * 0.5}deg) scale(1)`,
 						}}
 					>
 						{SPLASH_IMAGES.map((imgSrc, idx) => (
 							<img
 								key={idx}
 								src={imgSrc}
-								alt="VibeLane Silhouette"
-								className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
-									idx === activeImgIndex ? "opacity-100 scale-100" : "opacity-0 scale-102"
+								alt="VibeLane Collection"
+								className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out ${
+									idx === topIdx ? "opacity-100" : "opacity-0 pointer-events-none"
 								}`}
 							/>
 						))}
@@ -135,7 +164,7 @@ export default function SplashScreen({ onComplete }) {
 
 				{/* Giant Centered "VIBELANE" Typography overlapping cards in bold dark-mode palette */}
 				<h1
-					className="absolute z-20 pointer-events-none text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-[-0.03em] leading-none text-white/95 drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+					className="absolute z-20 pointer-events-none text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-[-0.03em] leading-none text-white/95 drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]"
 					style={{
 						fontFamily: "'Inter Tight', -apple-system, sans-serif",
 					}}
