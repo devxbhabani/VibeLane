@@ -1,6 +1,8 @@
 import { supabase } from "../config/db.js";
 import { mockProducts, mockCategories } from "../models/mockData.js";
 import { AppError } from "../utils/appError.js";
+import { cacheService } from "./cacheService.js";
+import { CACHE_KEYS, CACHE_TTL } from "../constants/cache.js";
 
 // Helper to map Supabase database snake_case columns to camelCase expected by the frontend
 const formatProduct = (p) => {
@@ -27,6 +29,20 @@ const formatProduct = (p) => {
 
 class ProductService {
 	async getAllProducts({ category, search, sort, minPrice, maxPrice }) {
+		const cacheKey = CACHE_KEYS.PRODUCTS_QUERY({
+			category,
+			search,
+			sort,
+			minPrice,
+			maxPrice,
+		});
+
+		// Check Redis Cache
+		const cachedProducts = await cacheService.get(cacheKey);
+		if (cachedProducts) {
+			return cachedProducts;
+		}
+
 		if (supabase) {
 			try {
 				let query = supabase.from("products").select("*");
@@ -63,7 +79,10 @@ class ProductService {
 				const { data, error } = await query;
 
 				if (!error && data && data.length > 0) {
-					return data.map(formatProduct);
+					const formatted = data.map(formatProduct);
+					// Cache the query result in Redis
+					await cacheService.set(cacheKey, formatted, CACHE_TTL.MEDIUM);
+					return formatted;
 				}
 
 				if (error) {
@@ -102,16 +121,30 @@ class ProductService {
 		if (sort === "price-low") results.sort((a, b) => a.price - b.price);
 		if (sort === "price-high") results.sort((a, b) => b.price - a.price);
 
+		// Cache mock fallback results as well
+		await cacheService.set(cacheKey, results, CACHE_TTL.MEDIUM);
 		return results;
 	}
 
 	async getProductById(id) {
+		const isNumeric = !isNaN(Number(id));
+		const cacheKey = isNumeric
+			? CACHE_KEYS.PRODUCT_BY_ID(id)
+			: CACHE_KEYS.PRODUCT_BY_SLUG(id);
+
+		//  Check Redis Cache
+		const cachedProduct = await cacheService.get(cacheKey);
+		if (cachedProduct) {
+			return cachedProduct;
+		}
+
+		let productResult = null;
+
 		if (supabase) {
 			try {
 				let query = supabase.from("products").select("*");
 
 				// Check if numeric ID, otherwise query by slug or item_number
-				const isNumeric = !isNaN(Number(id));
 				if (isNumeric) {
 					query = query.or(
 						`id.eq.${id},item_number.eq.${id},slug.eq.${id}`,
@@ -123,7 +156,7 @@ class ProductService {
 				const { data, error } = await query.limit(1).maybeSingle();
 
 				if (!error && data) {
-					return formatProduct(data);
+					productResult = formatProduct(data);
 				}
 			} catch (err) {
 				console.warn(
@@ -133,16 +166,43 @@ class ProductService {
 			}
 		}
 
-		const product = mockProducts.find(
-			(p) => p.id == id || p.slug === id || p.itemNumber === id,
-		);
-		if (!product) {
-			throw new AppError(`Product not found with identifier: ${id}`, 404);
+		if (!productResult) {
+			const product = mockProducts.find(
+				(p) => p.id == id || p.slug === id || p.itemNumber === id,
+			);
+			if (!product) {
+				throw new AppError(`Product not found with identifier: ${id}`, 404);
+			}
+			productResult = product;
 		}
-		return product;
+
+		//  Cache in Redis under both ID and Slug (if available) for 1 hour
+		await cacheService.set(cacheKey, productResult, CACHE_TTL.VERY_LONG);
+		if (
+			productResult.slug &&
+			cacheKey !== CACHE_KEYS.PRODUCT_BY_SLUG(productResult.slug)
+		) {
+			await cacheService.set(
+				CACHE_KEYS.PRODUCT_BY_SLUG(productResult.slug),
+				productResult,
+				CACHE_TTL.VERY_LONG,
+			);
+		}
+
+		return productResult;
 	}
 
 	async getCategories() {
+		const cacheKey = CACHE_KEYS.ALL_CATEGORIES;
+
+		// Check Redis
+		const cachedCategories = await cacheService.get(cacheKey);
+		if (cachedCategories) {
+			return cachedCategories;
+		}
+
+		let categories = mockCategories;
+
 		if (supabase) {
 			try {
 				const { data, error } = await supabase
@@ -152,7 +212,7 @@ class ProductService {
 					const uniqueCategories = Array.from(
 						new Set(data.map((item) => item.category)),
 					);
-					return ["All", ...uniqueCategories];
+					categories = ["All", ...uniqueCategories];
 				}
 			} catch (err) {
 				console.warn(
@@ -161,7 +221,10 @@ class ProductService {
 				);
 			}
 		}
-		return mockCategories;
+
+		//  Cache categories for 15 minutes
+		await cacheService.set(cacheKey, categories, CACHE_TTL.LONG);
+		return categories;
 	}
 }
 
