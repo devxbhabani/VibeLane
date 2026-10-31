@@ -39,28 +39,34 @@ function AppContent() {
 								: "opacity-0 scale-[0.99] translate-y-2 pointer-events-none"
 						}`}
 					>
-							<Routes>
-								<Route exact path="/" element={<Home />} />
-								<Route exact path="/privacy" element={<Privacy />} />
-								<Route exact path="/terms" element={<Terms />} />
-								<Route
-									exact
-									path="/products/:slug"
-									element={<ProductDetail />}
-								/>
-								<Route exact path="/bag" element={<Bag />} />
-								<Route exact path="/checkout" element={<Checkout />} />
-								<Route exact path="/login" element={<Login />} />
-								<Route exact path="/signup" element={<Signup />} />
-								<Route exact path="/verify-otp" element={<VerifyOtp />} />
-								<Route exact path="/account" element={<Account />} />
-								<Route exact path="/orders" element={<Orders />} />
-								<Route path="*" element={<NotFound />} />
-							</Routes>
-							<Footer />
-						</div>
-					</Router>
-				</div>
+						<Routes>
+							<Route exact path="/" element={<Home />} />
+							<Route exact path="/privacy" element={<Privacy />} />
+							<Route exact path="/terms" element={<Terms />} />
+							<Route
+								exact
+								path="/products/:slug"
+								element={<ProductDetail />}
+							/>
+							<Route exact path="/bag" element={<Bag />} />
+							<Route exact path="/checkout" element={<Checkout />} />
+							<Route exact path="/login" element={<Login />} />
+							<Route exact path="/signup" element={<Signup />} />
+							<Route exact path="/verify-otp" element={<VerifyOtp />} />
+							<Route exact path="/account" element={<Account />} />
+							<Route exact path="/orders" element={<Orders />} />
+							<Route path="*" element={<NotFound />} />
+
+							{/* ADMIN ROUTES */}
+							<Route element={<AdminRoute />}>
+								<Route path="/admin" element={<AdminDashboard />} />
+								<Route path="/admin/orders" element={<AdminOrders />} />
+							</Route>
+						</Routes>
+						<Footer />
+					</div>
+				</Router>
+			</div>
 		</>
 	);
 }
