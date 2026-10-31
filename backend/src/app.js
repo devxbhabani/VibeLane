@@ -11,6 +11,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust reverse proxy (Render, Vercel, Heroku, etc.) so express-rate-limit can read client IPs accurately
+app.set('trust proxy', 1);
+
 // Global Middlewares
 const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
