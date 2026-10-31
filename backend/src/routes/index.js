@@ -3,6 +3,7 @@ import { checkHealth } from "../controllers/healthController.js";
 import productRoutes from "./productRoutes.js";
 import authRoutes from "./authRoutes.js";
 import userRoutes from "./userRoutes.js";
+import adminRoutes from "./adminRoutes.js";
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.get("/health", checkHealth);
 router.use("/products", productRoutes);
 router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
+router.use("/admin", adminRoutes);
 
 export default router;

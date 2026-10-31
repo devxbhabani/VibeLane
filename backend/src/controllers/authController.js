@@ -6,9 +6,13 @@ import { sendOtpEmail } from "../services/mailService.js";
 const JWT_SECRET = process.env.JWT_SECRET || "$vibelane_2026$";
 
 const createToken = (user) => {
-	return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-		expiresIn: "30d",
-	});
+	return jwt.sign(
+		{ id: user.id, email: user.email, role: user.role },
+		JWT_SECRET,
+		{
+			expiresIn: "30d",
+		},
+	);
 };
 
 //SIGN UP
@@ -199,7 +203,10 @@ export const login = async (req, res, next) => {
 		}
 
 		//verify password with bcrypt
-		const isPasswordCorrect = await bcrypt.compare(password, user.password_hash);
+		const isPasswordCorrect = await bcrypt.compare(
+			password,
+			user.password_hash,
+		);
 		if (!isPasswordCorrect) {
 			return res.status(401).json({ error: "Invalid Credentials" });
 		}
