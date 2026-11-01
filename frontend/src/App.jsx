@@ -19,6 +19,8 @@ import Account from "./pages/Account";
 import Orders from "./pages/Orders";
 import SplashScreen from "./components/layout/SplashScreen";
 import RouteTransitionLoader from "./components/layout/RouteTransitionLoader";
+import AdminRoute from "./components/auth/AdminRoute";
+import AdminOrders from "./pages/AdminOrders";
 
 function AppContent() {
 	const { splashFinished, setSplashFinished } = useApp();
@@ -59,7 +61,7 @@ function AppContent() {
 
 							{/* ADMIN ROUTES */}
 							<Route element={<AdminRoute />}>
-								<Route path="/admin" element={<AdminDashboard />} />
+								{/* <Route path="/admin" element={<AdminDashboard />} /> */}
 								<Route path="/admin/orders" element={<AdminOrders />} />
 							</Route>
 						</Routes>

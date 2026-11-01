@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
-import { verifyotpUser, signupUser } from "../services/authServices";
+import { verifyotpUser, resendOtpApi } from "../services/authServices";
 import { useApp } from "../context/AppContext";
 import { ArrowLeft, CheckCircle2, ShieldAlert } from "lucide-react";
 
@@ -60,6 +60,25 @@ export default function VerifyOtp() {
 		if (nextInput) nextInput.focus();
 	};
 
+	const handleResend = async () => {
+		if (!email) {
+			setError("No email address provided to resend code.");
+			return;
+		}
+
+		try {
+			setError("");
+			setResendStatus("Dispatching fresh code...");
+			await resendOtpApi(email);
+			setResendStatus("New 6-digit code sent to your inbox!");
+			setCountdown(60);
+			setTimeout(() => setResendStatus(""), 4000);
+		} catch (err) {
+			setError(err.message || "Failed to resend verification code.");
+			setResendStatus("");
+		}
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const fullOtp = otp.join("");
@@ -86,11 +105,11 @@ export default function VerifyOtp() {
 		<div className="min-h-screen pt-28 pb-20 px-6 flex items-center justify-center selection:bg-[#EDE4DD] selection:text-black">
 			<div className="w-full max-w-md bg-[#0a0a0a] border border-white/15 p-8 md:p-10 shadow-2xl relative">
 				<Link
-					to="/signup"
+					to="/login"
 					className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-zinc-500 hover:text-white transition-colors mb-8"
 				>
 					<ArrowLeft className="w-3.5 h-3.5" />
-					Change Email
+					Return to Login
 				</Link>
 
 				<div className="mb-8">
@@ -113,6 +132,13 @@ export default function VerifyOtp() {
 					<div className="mb-6 p-3.5 bg-red-500/10 border border-red-500/20 text-red-400 font-mono text-xs flex items-center gap-2">
 						<ShieldAlert className="w-4 h-4 shrink-0" />
 						<span>{error}</span>
+					</div>
+				)}
+
+				{resendStatus && (
+					<div className="mb-6 p-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-2">
+						<CheckCircle2 className="w-4 h-4 shrink-0" />
+						<span>{resendStatus}</span>
 					</div>
 				)}
 
@@ -150,7 +176,7 @@ export default function VerifyOtp() {
 					) : (
 						<button
 							type="button"
-							onClick={() => setCountdown(60)}
+							onClick={handleResend}
 							className="text-[#EDE4DD] hover:underline cursor-pointer font-bold"
 						>
 							Request New Code

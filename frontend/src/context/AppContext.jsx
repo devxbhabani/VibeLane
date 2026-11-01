@@ -131,7 +131,7 @@ export const AppProvider = ({ children }) => {
 
 		const userCartKey = `vibelane_cart_${userData.id}`;
 		const userCart = localStorage.getItem(userCartKey);
-		setCart(userCart ? JSON.perse(userCart) : []);
+		setCart(userCart ? JSON.parse(userCart) : []);
 	};
 
 	const handleLogout = () => {
@@ -142,7 +142,7 @@ export const AppProvider = ({ children }) => {
 
 		const guestCartKey = `vibelane_cart_guest`;
 		const guestCart = localStorage.getItem(guestCartKey);
-		setCart(guestCart ? JSON.perse(guestCart) : []);
+		setCart(guestCart ? JSON.parse(guestCart) : []);
 	};
 
 	useEffect(() => {

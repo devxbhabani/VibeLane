@@ -28,6 +28,18 @@ export const verifyotpUser = async ({ email, otp }) => {
 	return data;
 };
 
+export const resendOtpApi = async (email) => {
+	const res = await fetch(`${API_URL}/auth/resend-otp`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ email }),
+	});
+	const data = await res.json();
+	if (!res.ok)
+		throw new Error(data.error || data.message || "Failed to resend code");
+	return data;
+};
+
 export const loginUser = async ({ email, password }) => {
 	const res = await fetch(`${API_URL}/auth/login`, {
 		method: "POST",
