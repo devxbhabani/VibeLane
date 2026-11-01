@@ -3,13 +3,14 @@ import {
 	signup,
 	login,
 	verifySignUpOtp,
+	resendOtp,
 } from "../controllers/authController.js";
-import { authLimiter, otpLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/signup", otpLimiter, signup);
-router.post("/verifyotp", authLimiter, verifySignUpOtp);
-router.post("/login", authLimiter, login);
+router.post("/signup", signup);
+router.post("/verifyotp", verifySignUpOtp);
+router.post("/resend-otp", resendOtp);
+router.post("/login", login);
 
 export default router;
